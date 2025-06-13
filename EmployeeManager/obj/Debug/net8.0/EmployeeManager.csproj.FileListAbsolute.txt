@@ -180,3 +180,4 @@ C:\Users\kpshu\source\repos\EmployeeManager\EmployeeManager\obj\Debug\net8.0\ref
 C:\Users\kpshu\source\repos\EmployeeManager\EmployeeManager\obj\Debug\net8.0\EmployeeManager.pdb
 C:\Users\kpshu\source\repos\EmployeeManager\EmployeeManager\obj\Debug\net8.0\EmployeeManager.genruntimeconfig.cache
 C:\Users\kpshu\source\repos\EmployeeManager\EmployeeManager\obj\Debug\net8.0\ref\EmployeeManager.dll
+C:\Users\kpshu\source\repos\EmployeeManager\EmployeeManager\obj\Debug\net8.0\EmployeeManager.sourcelink.json
