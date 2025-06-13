@@ -1,0 +1,242 @@
+﻿@using EmployeeManager.ViewModels;
+@model EmployeeListViewModel;
+
+@{
+    ViewData["Title"] = "Manage Employees";
+}
+
+<div class="d-flex justify-content-center">
+    <h1>@ViewData["Title"]</h1>
+</div>
+<div class="row mb-2">
+    <div class="col-md-auto">
+        <button id="btnEmployeeAdd" type="button" class="btn btn-success"><span class="fa fa-plus-square-o"></span>&nbsp;Add Employee</button>
+    </div>
+</div>
+<div id="dvEmployee">
+    <form id="frmEmployee" asp-controller="Home" asp-action="Index">
+        <div class="row">
+            <div class="col-md-6">
+                <input type="hidden" asp-for="CurrentEmployee.Id" />
+                <input type="hidden" asp-for="FormMode" />
+                <div class="form-floating mb-1">
+                    <input class="form-control employee-edit-control" type="text" asp-for="CurrentEmployee.FirstName" />
+                    <label id="lblCurrentEmployee_FirstName" class="form-label" asp-for="CurrentEmployee.FirstName"></label>
+                </div>
+                <span class="text-danger" asp-validation-for="CurrentEmployee.FirstName"></span>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-1">
+                    <input class="form-control employee-edit-control" type="text" asp-for="CurrentEmployee.LastName" />
+                    <label id="lblCurrentEmployee_LastName" class="form-label" asp-for="CurrentEmployee.LastName"></label>
+                </div>
+                <span class="text-danger" asp-validation-for="CurrentEmployee.LastName"></span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-floating mb-1">
+                    <input class="form-control employee-edit-control" type="email" asp-for="CurrentEmployee.Email" />
+                    <label id="lblCurrentEmployee_Email" class="form-label" asp-for="CurrentEmployee.Email"></label>
+                </div>
+                <span class="text-danger" asp-validation-for="CurrentEmployee.Email"></span>
+            </div>
+            <div class="col-md-6">
+                <div class="form-floating mb-1">
+                    <input class="form-control employee-edit-control" type="text" asp-for="CurrentEmployee.Phone" />
+                    <label id="lblCurrentEmployee_Phone" class="form-label" asp-for="CurrentEmployee.Phone"></label>
+                </div>
+                <span class="text-danger" asp-validation-for="CurrentEmployee.Phone"></span>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-6">
+                <div class="form-floating mb-1">
+                    <select class="form-select employee-edit-control" asp-for="CurrentEmployee.DepartmentId" asp-items="Model.CurrentEmployee.Departments">
+                        <option value="">Please Select</option>
+                    </select>
+                    <label id="lblCurrentEmployee_DepartmentId" class="form-label" asp-for="CurrentEmployee.DepartmentId"></label>
+                </div>
+                <span class="text-danger" asp-validation-for="CurrentEmployee.DepartmentId"></span>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-md-12">
+                <div class="d-flex justify-content-end">
+                    <button id="btnSubmit" class="btn btn-success" type="submit"><span class="fa fa-plus-square-o"></span>&nbsp;Add</button>
+                </div>
+            </div>
+        </div>
+
+        @if (Model.EmployeeList != null && Model.EmployeeList.Count > 0)
+        {
+            <table class="table-hover table table-bordered" id="tblEmployees">
+                <thead>
+                    <tr>
+                        <th>
+                            First Name
+                        </th>
+                        <th>
+                            Last Name
+                        </th>
+                        <th>
+                            Email
+                        </th>
+                        <th>
+                            Phone
+                        </th>
+                        <th>
+                            @Html.LabelFor(model => model.EmployeeList[0].DepartmentName)
+                        </th>
+                        <th>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (var currentEmployee = 0; currentEmployee < Model.EmployeeList.Count; currentEmployee++)
+                    {
+                        <tr>
+                            <td>
+                                @Html.Raw(Model.EmployeeList[currentEmployee].FirstName)
+                            </td>
+                            <td>
+                                @Html.Raw(Model.EmployeeList[currentEmployee].LastName)
+                            </td>
+                            <td>
+                                @Html.Raw(Model.EmployeeList[currentEmployee].Email)
+                            </td>
+                            <td>
+                                @Html.Raw(Model.EmployeeList[currentEmployee].Phone)
+                            </td>
+                            <td>
+                                @Html.Raw(Model.EmployeeList[currentEmployee].DepartmentName)
+                            </td>
+                            <td>
+                                <div class="row">
+                                    <div class="col-md-auto">
+                                        @Html.Raw(Model.EmployeeList[currentEmployee].EditButtonText)
+                                    </div>
+                                    <div class="col-md-auto">
+                                        @Html.Raw(Model.EmployeeList[currentEmployee].DeleteButtonText)
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No employees found...</p>
+        }
+    </form>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+            addAllRequiredToLabel();
+            $("#FormMode").val("Add")
+            $("#CurrentEmployee_Id").val("0");
+            $("#btnEmployeeAdd").hide();
+            clearEmployeeValues();
+        });
+
+        function addAllRequiredToLabel() {
+            addRequireedToLabel("lblCurrentEmployee_FirstName");
+            addRequireedToLabel("lblCurrentEmployee_LastName");
+            addRequireedToLabel("lblCurrentEmployee_Email");
+            addRequireedToLabel("lblCurrentEmployee_Phone");
+            addRequireedToLabel("lblCurrentEmployee_DepartmentId");
+        }
+
+        function addRequireedToLabel(labelName) {
+            if (labelName && labelName != "") {
+                var htmlToAdd = "&nbsp;<span class='fa fa-asterisk text-danger'></span>"
+                var lblToChange = $("#" + labelName);
+
+                if (lblToChange.length > 0) {
+                    var lblHtml = lblToChange.html();
+                    lblHtml += htmlToAdd;
+                    lblToChange.html(lblHtml);
+                }
+            }
+        }
+
+        $("#btnEmployeeAdd").on("click", function(e) {
+            $("#FormMode").val("Add");
+            clearEmployeeValues();
+            $("#btnSubmit").html("<span class='fa fa-plus-square-o'></span>&nbsp;Add");
+            disableEmployeeEditControls(false);
+            $(this).hide();
+        });
+
+        $(".employee-delete-button").on("click", function () {
+            var employeeId = $(this).val();
+            $("#FormMode").val("Delete");
+            setEmployeeValues(employeeId);
+            disableEmployeeEditControls(true);
+            $("#btnSubmit").html("<span class='fa fa-minus-circle'></span>&nbsp;Delete");
+        });
+
+        $(".employee-edit-button").on("click", function () {
+            var employeeId = $(this).val();
+
+            setEmployeeValues(employeeId);
+            $("#btnSubmit").html("<span class='fa fa-save'></span>&nbsp;Save");
+            $("#FormMode").val("Edit");
+            $("#btnEmployeeAdd").show();
+            disableEmployeeEditControls(false);
+            $("#CurrentEmployee_FirstName").focus();
+        });
+
+        function disableEmployeeEditControls(disableControls) {
+            $(".employee-edit-control").each(function (i, obj) {
+                $(obj).prop("disabled", disableControls);
+            });
+        }
+
+        function setEmployeeValues(employeeId)
+        {
+            $.ajax({
+                url: "Home/GetEmployee?Id=" + employeeId,
+                type: "POST",
+                data: employeeId,
+                processData: false,
+                contentType: false,
+                async: true,
+                cache: false,
+                enctype: "multipart/form-data",
+                dataType: "json",
+                success: function(data) {
+                    if (data.firstName !== "") {
+                        $("#CurrentEmployee_Id").val(data.id);
+                        $("#CurrentEmployee_FirstName").val(data.firstName);
+                        $("#CurrentEmployee_LastName").val(data.lastName);
+                        $("#CurrentEmployee_Phone").val(data.phone);
+                        $("#CurrentEmployee_Email").val(data.email);
+                        $("#CurrentEmployee_DepartmentId").val(data.departmentId).change();
+                        $("#CurrentEmployee_FirstName").focus();
+                    }
+                }
+            });
+        }
+
+        function clearEmployeeValues()
+        {
+            $("#CurrentEmployee_Id").val("");
+            $("#CurrentEmployee_FirstName").val("");
+            $("#CurrentEmployee_LastName").val("");
+            $("#CurrentEmployee_Phone").val("");
+            $("#CurrentEmployee_Email").val("");
+            $("#CurrentEmployee_DepartmentId").val("").change();
+            $("#CurrentEmployee_FirstName").focus();
+        }
+    </script>
+}
